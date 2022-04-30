@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bfc</title>
+    <style>
+        .wrapper {
+            position: relative;
+            border: 1px solid #000;
+            /* overflow: hidden; */
+            /* overflow: scroll; */
+        }
+        .content {
+            /* position: absolute;
+            /* top: 0;
+            left: 0; */
+            /* float: left; */
+            width: 100px;
+            height: 100px; 
+            background-color: red;
+            margin-bottom: 100px;
+            margin-top: 100px;
+        }
+        .main {
+            background-color: rebeccapurple;
+            overflow: hidden;
+        }
+        .wrapper2 {
+            background: magenta;
+            /* 触发bfc */
+            overflow: hidden; 
+        }
+        .content2 {
+            width: 200px;
+            height: 200px;
+            background-color: blue;
+            margin-top: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="content"></div>
+        <div class="main">
+            <div class="content"></div>
+        </div>
+    </div>
+
+    <!-- 下面这个例子是使用bfc去解决margin塌陷的问题 -->
+    <div class="wrapper2">
+        <div class="content2"></div>
+    </div>
+</body>
+</html>
