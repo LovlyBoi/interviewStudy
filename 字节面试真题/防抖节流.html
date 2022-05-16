@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>防抖/节流</title>
+</head>
+
+<body>
+    <script>
+
+        // 防抖: n秒后执行对应回调, 如果在n秒内重复触发, 则重新开始计算
+        function debounce(callback, wait) {
+            let cacheTargetTime = null;
+            let cacheAnimationId = null;
+            let result = null;
+            let self = null;
+            function triggerCallback(callback, targetTime, args) {
+                cacheAnimationId = requestAnimationFrame(() => {
+                    const currentTime = Date.now();
+                    if (currentTime >= targetTime) {
+                        result = callback.apply(self, args);
+                        cacheAnimationId = null;
+                        cacheTargetTime = null;
+                    }
+                    else {
+                        triggerCallback(callback, targetTime);
+                    }
+                })
+            }
+            return function (...args) {
+                self = this;
+                if (requestAnimationFrame) {
+                    const targetTime = Date.now() + wait;
+                    if (cacheTargetTime && cacheTargetTime !== targetTime) {
+                        cancelAnimationFrame(cacheAnimationId)
+                    }
+                    cacheTargetTime = targetTime;
+                    triggerCallback(callback, targetTime, args);
+                } else {
+                    clearTimeout(cacheAnimationId);
+                    cacheAnimationId = setTimeout(() => {
+                        result = callback.apply(self, args);
+                    }, wait)
+                }
+                return result;
+            }
+        }
+
+        // 节流: n秒内多次触发同一个回调, 只会算作一次
+        function throttle(callback, duration) {
+            let lastTriggerTime = null;
+            let self = null;
+            let result;
+            return function(...args) {
+                const now = Date.now();
+                self = this;
+                if (lastTriggerTime && lastTriggerTime + duration > now) {
+                    return result;
+                }
+                result = callback.apply(self, args);
+                lastTriggerTime = now;
+                return result;
+            }
+        }
+    </script>
+</body>
+
+</html>

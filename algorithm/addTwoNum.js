@@ -47,8 +47,8 @@ function addTwoNumbers(fstLink, secLink) {
     return resultLink;
 }
 
-const fstLink = new ListNode(2, new ListNode(4, new ListNode(3)));
-const secLink = new ListNode(5, new ListNode(6, new ListNode(4)));
+const fstLink = new ListNode(2);
+const secLink = new ListNode(8);
 
 const sumLink = addTwoNumbers(fstLink, secLink);
 

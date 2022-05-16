@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>build ur own react</title>
+    <style>
+        .wrapper {
+            width: 100px;
+            height: 100px;
+            background-color: lightcoral;
+
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        
+        function createTextElement(text) {
+            return {
+                type: "TEXT_ELEMENT",
+                props: {
+                    children: [],
+                    nodeValue: text
+                }
+            }
+        }
+        function createElement(tag, props, ...children) {
+            return {
+                type: tag,
+                props: {
+                    ...props, 
+                    children: children.map(child => {
+                        if (typeof child === "object") return child;
+                        return createTextElement(child);
+                    })
+                }
+            }
+        }
+
+        function createDOMFromFiber(fiber) {
+            let dom;
+            if (fiber.type === "TEXT_ELEMENT") {
+                dom = document.createTextNode(fiber.props.nodeValue);
+            } else {
+                dom = document.createElement(fiber.props.type);
+                // 挂上属性
+                for (const prop in fiber.props) {
+                    if (prop !== "children") {
+                        dom.setAttribute(prop, fiber.props[prop]);
+                    }
+                }
+            }
+            return dom;
+        }
+
+        // 决定是否中断渲染, 这个函数是要交给requestIdleCallback去执行的
+        // requestIdleCallback会给workLoop传递一个当前帧还有多少时间可以执行js
+        // 这个时间是一个毫秒数, 超过这个时机以后, 浏览器将进入下一帧的绘制
+        let nextUnitWork = null; // 他就是工作的fiber
+        function workLoop(timeRemaining) {
+            const shouldYield = timeRemaining() < 1;
+            if(!shouldYield && nextUnitWork) {
+                // 只要是不需要被阻止, 同时下一次要工作的单元有值
+                nextUnitWork = performUnitOfWork(nextUnitWork);
+            }
+            requestIdleCallback(workLoop);
+        }
+
+        function performUnitOfWork(fiber) {
+            // 首先生成真实dom
+            if (!fiber.dom) {
+                fiber.dom = createDOMFromFiber(fiber);
+            }
+
+            if (fiber.return) {
+                // 我们直接把他的真实dom塞进他父级元素里
+                fiber.return.dom.appendChild(fiber.dom);
+            }
+
+            let previousChildFiber = null;
+            fiber.props.children.forEach((childElement, index) => {
+                // 全部转换为fiber对象
+                const fiberInstance = {
+                    ...childElement,
+                    return: fiber,
+                }
+                if (index === 0) {
+                    fiber.child = fiberInstance;
+                } else {
+                    previousChildFiber.sibling = fiberInstance;
+                }
+                previousChildFiber = fiberInstance;
+            })
+
+            // 找到下一次工作的fiber
+            const nextUnitWorkFiber = null;
+            // 1. 先找儿子
+            if (fiber.child) {
+                nextUnitWorkFiber = fiber.child;
+            } else if (fiber.sibling) {
+                // 2. 没有儿子找兄弟
+                nextUnitWorkFiber = fiber.sibling;
+            } else {
+                // 找叔叔
+                nextUnitWorkFiber = fiber.return && fiber.return.sibling;
+            }
+            
+            return nextUnitWorkFiber;
+        }
+
+        function render(element, container) {
+           nextUnitWork = {
+               dom: container,
+               props: {
+                   children: [element]
+               }
+           }
+        }
+
+        const React = {
+            createElement,
+            createTextElement
+        }
+
+        const ReactDOM = {
+            render
+        }
+
+        const elm = React.createElement("div", {
+            class: "wrapper"
+        }, React.createElement("span", {}, "helloWorld"));
+
+        console.log("elm", elm);
+
+        ReactDOM.render(elm, document.getElementById("app"));
+    </script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+
+// 路径总和
+function getPathSum(root, target) {
+    if (!root || typeof target !== "number") return [];
+    const result = [];
+    function calcPath(node, sum, path) {
+        if (!node) return;
+        path.push(node.value);
+        sum += node.value;
+        if (node.left == null && node.right == null && target === sum) {
+            result.push(path.slice());
+        }
+        calcPath(node.left, sum, path);
+        calcPath(node.right, sum, path);
+        path.pop();
+        sum -= node.value;
+     }
+
+     calcPath(root, 0, []);
+     return result;
+}
+
+// const tree = {
+//     value: 1,
+//     left: {
+//         value: 2,
+//         left: {
+//             value: 3
+//         },
+//         right: {
+//             value: 3
+//         }
+//     },
+//     right: {
+//         value: 5
+//     }
+// }
+
+// console.log("getPathSum(tree, 6)", getPathSum(tree, 6));
+
+// 最大连续子数组和
+function maxSubArray(nums = []) {
+    if (!Array.isArray(nums)) return {
+        value: 0,
+        path: []
+    }
+    let maxValue = nums[0];
+    let calcValue = nums[0];
+    let maxPath = [nums[0]];
+    let calcPath = [];
+    for (let i = 0; i < nums.length; i++) {
+        if (calcValue > 0) {
+            calcValue += nums[i];
+            calcPath.push(nums[i]);
+        } else {
+            calcValue = nums[i];
+            calcPath = [nums[i]];
+        }
+        maxPath = calcValue > maxValue ? calcPath.slice() : maxPath.slice();
+        maxValue = Math.max(calcValue, maxValue);
+    }
+
+    return {
+        value: maxValue,
+        path: maxPath
+    }
+}
+
+// console.log("xxxx", maxSubArray([-2,1,-3,4,-1,2,1,-5,4]));
+
+// 两数相加
+function addTwoNum(fstLink, secLink) {
+    if (!fstLink) return secLink;
+    if (!secLink) return fstLink;
+    if (!secLink && !fstLink) return {
+        value: 0,
+        next: null
+    }
+    const _fstLink = JSON.parse(JSON.stringify(fstLink));
+    const _secLink = JSON.parse(JSON.stringify(secLink));
+    let result = "";
+    let cache = 0;
+    let fstIsOver = false;
+    let secIsOver = false;
+    function calc(rootOne, rootTwo) {
+        if (fstIsOver && secIsOver) return;
+        let rootOneValue = 0, rootTwoValue = 0;
+        let cacheOneRoot = rootOne, cacheTwoRoot = rootTwo;
+        while(!fstIsOver && cacheOneRoot.next && cacheOneRoot.next.next) {
+            // 一直找
+            cacheOneRoot = cacheOneRoot.next;
+            console.log("ssssss", rootOneValue);
+        }
+        while(!secIsOver && cacheTwoRoot.next && cacheTwoRoot.next.next) {
+            cacheTwoRoot = cacheTwoRoot.next;
+        }
+
+        // 最终会找到倒数第二个
+
+        
+        if(!fstIsOver && !cacheOneRoot.next) {
+            // 代表已经到第一个了
+            rootOneValue = cacheOneRoot.value;
+            fstIsOver = true;
+        }
+
+        if (!secIsOver && !cacheTwoRoot.next) {
+            rootTwoValue = cacheTwoRoot.value;
+            secIsOver = true;
+        }
+
+        if(!fstIsOver) {
+            rootOneValue = cacheOneRoot.next.value;
+        }
+        if (!secIsOver) {
+            rootTwoValue = cacheTwoRoot.next.value;
+        }
+
+        let presentValue = rootOneValue + rootTwoValue + cache;
+        cache = 0;
+        if (presentValue >= 10) {
+            presentValue = presentValue % 10;
+            cache = 1;
+        }
+        console.log("presentValue", presentValue, rootOneValue, rootTwoValue);
+        result += presentValue;
+        cacheOneRoot.next = null;
+        cacheTwoRoot.next = null;
+        calc(rootOne, rootTwo);
+    }
+
+    calc(_fstLink, _secLink);
+
+    if (cache) result += cache;
+    console.log("result", result);
+
+    cache = 0;
+
+    let i = result.length - 1;
+    let link = node = {
+        value: result[i],
+    }
+    i--;
+    while(i >= 0) {
+        node.next = {
+            value: result[i]
+        }
+        node = node.next;
+        i--;
+    }
+    console.log("link", link);
+    return link
+}
+
+
+// 括号生成
+function generateBrackets(n) {
+    const result = [];
+    function calc(left, right, curStr) {
+        if (left === 0 && right === 0) {
+            result.push(curStr);
+        }
+        if (left > 0) {
+            calc(left - 1, right, curStr + "(");
+        }
+        if (right > left) {
+            calc(left, right - 1, curStr + ")");
+        }
+    }
+    calc(n, n, "");
+    return result;
+}
+
+// console.log("dadsa", generateBrackets(2));
+
+// 全排列
+function permute(nums) {
+    const res = [], path = [];
+    calc(nums, nums.length, []);
+    return res;
+
+    function calc(nums, length, used) { // [0, 1] 2, [], 
+        if (path.length === length) {
+            res.push(Array.from(path));
+            return;
+        }
+        for (let i = 0; i < length; i++) {
+            if (used[i]) continue;
+            console.log("nums[i]", nums[i], used);
+            path.push(nums[i]); // path: [0, 1]
+            used[i] = true; // [true, true]
+            calc(nums, length, used);
+            console.log("path",path);
+            path.pop();
+            used[i] = false;
+        }
+    }
+}
+
+console.log("permute", permute([0, 1]));

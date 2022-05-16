@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>exam</title>
+</head>
+
+<body>
+    <script>
+
+        // 防抖: n秒后触发, 在n秒内再次触发则重新计算
+        function debounce(callback, wait) {
+            let result,
+                timerId,
+                lastCacheTime,
+                self;
+            function startTimeTrail(callback, args) {
+                timerId = requestAnimationFrame(() => {
+                    const now = Date.now();
+                    if (now >= lastCacheTime) {
+                        // 证明时间到了
+                        result = callback.apply(self, args);
+                        lastCacheTime = null; // 代表本次ok了
+                        timerId = null;
+                    } else {
+                        // 继续等呗
+                        startTimeTrail(callback, args);
+                    }
+                })
+            }
+
+            function stopLastTrail() {
+                if (cancelAnimationFrame) {
+                    cancelAnimationFrame(timerId);
+                }
+            }
+
+            return function (...args) {
+                const now = Date.now();
+                self = this;
+                const triggerTime = now + wait;
+                if (lastCacheTime) {
+                    // 代表他重复触发了老铁, 直接取消上一次的timerId
+                    stopLastTrail();
+                }
+                lastCacheTime = triggerTime;
+                if (window.requestAnimationFrame) {
+                    startTimeTrail(callback);
+                } else {
+                    clearTimeout(timerId);
+                    timerId = setTimeout(() => {
+                        result = callback.apply(self, args);
+                    }, wait)
+                }
+                return result;
+            }
+        }
+
+
+        // 给定一个整数数组```nums```和一个整数目标值```target```, 请你在该数组中找出**和为目标值```target```的那两个整数, 并返回他们的数组下标
+        function twoSum(nums = [], target) {
+            const map = new Map([]);
+            for (let i = 0, len = nums.length; i < len; i ++) {
+                for (let j = 1; j < len; j++) {
+                    if (j !== i) {
+                        if (nums[i] + nums[j] === target && !map.get(j)) {
+                            // 如果是相等的
+                            map.set(i, j);
+                        }
+                    }
+                }
+            }
+            console.log("map", map);
+        }
+
+        // 求最大不连续的字符串
+        function lengthOfLongestSubstring(str) {
+            if (typeof str !== "string") return 0;
+            const len = str.length;
+            if (len <= 1) return len;
+            let left = 0, right = 0;
+            const temp = [];
+            while(right < len) {
+                if (temp.includes(str[right])) {
+                    // 如果他已经有了, 那我就开始裁
+                    temp.shift();
+                    left ++;
+                } else {
+                    temp.push(str[right]);
+                    right ++;
+                }
+            }
+        }
+
+        const arr = [1, 2, 3];
+
+        arr.reduce((prev, cur) => {
+            console.log("prev", prev, cur);
+            return {
+                value: cur
+            }
+        }, {})
+        
+        function curry(fn) {
+    return function curried(...args) {
+        if (args.length >= fn.length) {
+            return fn.apply(this, args);
+        } else {
+            return function(...anotherArgs) {
+                return curried.apply(this, args.concat(anotherArgs));
+            }
+        }
+    }
+}
+
+
+
+    </script>
+</body>
+
+</html>

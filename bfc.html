@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bfc处理margin塌陷和margin重叠</title>
+    <style>
+        
+      
+        /* .content:first-of-type {
+            margin-bottom: 120px;
+        }
+        .content:last-of-type {
+            margin-top: 100px;
+        } */
+
+        /* 
+
+         */
+         .main {
+             width: 200px;
+             height: 200px;
+             background-color: aliceblue;
+             display: flow-root;
+         }
+         .content {
+            width: 100px;
+            height: 100px;
+            background-color: royalblue;
+            margin-top: 100px;
+        }
+    </style>
+</head>
+<body>
+        <div class="main">
+            <div class="content"></div>
+        </div>
+<!-- 
+        <div class="content"></div>
+        <div class="main">
+            <div class="content"></div>
+        </div> -->
+</body>
+</html>

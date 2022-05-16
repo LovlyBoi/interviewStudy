@@ -3,3 +3,5 @@ module.exports = {
         return JSON.parse(JSON.stringify(targetObj));
     }
 }
+
+console.log("")

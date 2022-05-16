@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>debounce&throttle</title>
+</head>
+<body>
+    <script>
+
+        // function debounce(fn, delayTime) {
+        //     let result;
+        //     let lastCallTime = Date.now(); // 上一次调用的时间
+        //     let timerId;
+        //     let _this = this;
+        //     let _arguments = [];
+
+        //     function shouldInvoke(time = Date.now()) { // 是否需要调用函数了
+        //         // 主要是看上一次调用的时间和现在是否已经超过用户指定的时间差了
+        //         // console.log("lastCallTime", lastCallTime, time, delayTime);
+        //         return time - lastCallTime - delayTime >= 0;
+        //     }
+
+        //     function startTimer(pendingFn, wait) {
+        //         if (typeof requestAnimationFrame === "function") {
+        //             cancelAnimationFrame(timerId);
+        //             timerId = requestAnimationFrame(pendingFn);
+        //         } else {
+        //             setTimeout(pendingFn, wait);
+        //         }
+        //     }
+
+        //     function timeExpired() {
+        //         if (shouldInvoke()) {
+        //             console.log("该调用了");
+        //             // 到了调用时间了
+        //             result = fn.apply(_this, ..._arguments);
+        //             lastCallTime = Date.now();
+        //             return result;
+        //         }
+        //         // 重新开始计时
+        //         timerId = startTimer(timeExpired, delayTime);
+        //     }
+
+        //     return (...args) => {
+        //         _arguments = args;
+        //         timerId = startTimer(timeExpired, delayTime);
+        //         return result;
+        //     }
+        // }
+
+        function debounce(callback, duration) {
+            let timer = null;
+            let result;
+            return (...args) => {
+                if (timer) {
+                    clearTimeout(timer);
+                }
+                timer = setTimeout(() => {
+                    result = callback.apply(this, args);
+                }, duration)
+                return result;
+            }
+        }
+        
+
+    </script>
+</body>
+</html>

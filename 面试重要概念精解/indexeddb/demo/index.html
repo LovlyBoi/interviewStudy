@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>indexeddb实操</title>
+</head>
+<body>
+    <script>
+        // 打开一个数据库(如果没有就自行创建)
+        function openDB(dbName, version = 1) {
+            return new Promise((resolve, reject) => {
+                let db;
+                const request = indexedDB.open(dbName, version); // 如果没有的话就会创建
+                request.onsuccess = (e) => {
+                    console.log("e", e);
+                    db = e.target.result;
+                    // 当数据库打开以后我创建一个表
+                    const objectStore = db.createObjectStore("student", {
+                        keyPath: "stuId", // 主键
+                        autoIncrement: true, // 自增
+                    })
+                    objectStore.createIndex("stuId", "stuId", { unique: true }); // 创建索引名为stuId的索引, 所以的key为stuId
+                    resolve(db);
+                }
+                request.onerror = err => {
+                    reject(err);
+                }
+                // 数据库发生更新的时候触发
+                // 1. 版本号更新 2. 添加或者删除了表
+                request.onupgradeneeded = (e) => {
+                    console.log("create e", e);
+                }
+            })
+        }
+
+        openDB("student", 1);
+
+        
+
+    </script>
+</body>
+</html>

@@ -167,8 +167,58 @@
 
 
 
-new Promise((res, rej) => {
-    rej("error");
-}).then(() => {}, () => {})
-  .catch((err => {console.log("Error", err)}))
-  .then(res => console.log("res333", res));
+// // new Promise((res, rej) => {
+// //     rej("error");
+// // }).then(() => {}, () => {})
+// //   .catch((err => {console.log("Error", err)}))
+// //   .then(res => console.log("res333", res));
+
+// // const pro1 = new Promise((resolve, reject) => {
+// //   resolve(1);
+// // })
+
+// // const pro2 = Promise.reject("err");
+
+// // const pro3 = Promise.resolve("2");
+
+// // Promise.allSettled([Promise.reject("errr2"), Promise.resolve(1) ]).then(r => {
+// //   console.log("r", r);
+// // }, (err) => {
+// //   console.log("Err", err);
+// // })
+
+// function fakeAsyncDispatcher(fn) {
+//   return (...args) => {
+//     return new Promise((resolve, reject) => {
+//       try {
+//         const result = fn(...args);
+//         resolve(result);
+//       } catch(err) {
+//         reject(err);
+//       }
+//     })
+//   }
+// }
+
+// fakeAsyncDispatcher(() => {
+//   throw new Error("hello error");
+// })().then(r => {
+//   console.log("r", r);
+// }).catch(err => {
+//   console.log("出错了");
+// })
+
+// const promise = new Promise((resolve, reject) => {
+//   console.log(1);
+//   resolve();
+//   console.log(2);
+// })
+// promise.then(() => {
+//   console.log(3);
+// });
+
+// console.log(4);
+
+Promise.all([1, {a: 10}, function() {}, undefined]).then(r => {
+  console.log("r", r);
+})

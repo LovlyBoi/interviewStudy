@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+
+        // const times = 10000000;
+        // console.time("js object")
+        // for (let i = 0; i < times; i++) {
+        //     const obj = {
+        //         tag: "div",
+        //         props: {},
+        //         child: null,
+        //     }
+        // }
+        // console.timeEnd("js object");
+
+        // console.time("dom object");
+        // for(let i = 0; i < times; i++) {
+        //     const div = document.createElement("div");
+        // }
+        // console.timeEnd("dom object");
+
+        // function pushToMicroQueue(callback) {
+        //     if (process && process.nextTick) {
+        //         // 如果是node环境
+        //         process.nextTick(callback);
+        //     } else if (window && document) {
+        //         if (MutationObserver) {
+        //             const div = document.createElement("div");
+        //             const observer = new MutationObserver(callback);
+        //             observer.observe(div, {
+        //                 childList: true
+        //             })
+        //             div.innerHTML = 1;
+        //         } else {
+        //             Promise.resolve().then(callback);
+        //         }
+        //     }
+        // }
+
+        setInterval(() => {
+            console.log("123")
+        }, 3000)
+
+        for (let i = 0; i < 1000000000; i++) {
+            
+        }
+
+    </script>
+</body>
+</html>

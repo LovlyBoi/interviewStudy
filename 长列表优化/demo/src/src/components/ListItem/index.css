@@ -1,0 +1,15 @@
+.item-wrapper {
+    display: flex;
+}
+
+.item-wrapper .ant-list-item-meta-avatar {
+    width: 54px;
+}
+
+.item-wrapper .ant-list-item-meta-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-grow: 1;
+    justify-content: space-around;
+}
