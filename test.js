@@ -198,3 +198,44 @@ function permute(nums) {
 }
 
 console.log("permute", permute([0, 1]));
+
+// 快速排序
+function quickSort(arr, left, right, needClone = true) {
+    let _arr =  needClone ? JSON.parse(JSON.stringify(arr)) : arr
+    let len = _arr.length,
+        standardIndex;
+    left = typeof left === "number" ? left : 0;
+    right = typeof right === "number" ? right : len - 1;
+
+    if (left < right) {
+        standardIndex = partition(_arr, left, right);
+        console.log("standardIndex", standardIndex);
+        quickSort(_arr, left, standardIndex - 1, false);
+        quickSort(_arr, standardIndex + 1, right, false);
+    }
+    return _arr;
+}
+
+
+// 选择排序
+
+function selectionSort(arr) {
+    const _arr = JSON.parse(JSON.stringify(arr));
+    for (let i = 1, len = _arr.length; i < len; i++) {
+        let prevIndex = i - 1; // prev -> 2 currentIndex -> 3
+        const currentValue = _arr[i]; // 6
+        console.log("currentValue", currentValue);
+        // 如果prevValue大于了currentValue, 那么是要进行位置交换了
+        while ( prevIndex >= 0 && _arr[prevIndex] > currentValue) {
+            _arr[prevIndex + 1] = _arr[prevIndex];
+            prevIndex --;
+        } 
+
+        // [2, 4, 6, 6, 3, 5]
+        // 1 
+       _arr[prevIndex + 1] = currentValue;
+       console.log("JSON.parse(JSON.stringify(arr))", JSON.parse(JSON.stringify(_arr)), prevIndex)
+    }
+
+    return _arr;
+}

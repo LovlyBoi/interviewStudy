@@ -60,24 +60,42 @@
         // requestIdleCallback会给workLoop传递一个当前帧还有多少时间可以执行js
         // 这个时间是一个毫秒数, 超过这个时机以后, 浏览器将进入下一帧的绘制
         let nextUnitWork = null; // 他就是工作的fiber
+        let workInProgressFiber = null; // 新的整颗fiber树
         function workLoop(timeRemaining) {
             const shouldYield = timeRemaining() < 1;
             if(!shouldYield && nextUnitWork) {
                 // 只要是不需要被阻止, 同时下一次要工作的单元有值
                 nextUnitWork = performUnitOfWork(nextUnitWork);
             }
-            requestIdleCallback(workLoop);
+            if(nextUnitWork) {
+                requestIdleCallback(workLoop);
+            } else {
+                workInProgressFiber && commitWork(workInProgressFiber);
+            }
+        }
+
+        function commitWork(workInProgressFiber) {
+            commitFiberChild(workInProgressFiber.child);
+            workInProgressFiber = null;
+        }
+
+        function commitFiberChild(fiber) {
+            if (!fiber.dom) {
+                fiber.dom = createDOMFromFiber(fiber);
+            }
+
+            if (fiber.return) {
+                fiber.return.appendChild(fiber.dom);
+            }
+
+            commitFiberChild(fiber.child);
+            commitFiberChild(fiber.sibling);
         }
 
         function performUnitOfWork(fiber) {
             // 首先生成真实dom
             if (!fiber.dom) {
                 fiber.dom = createDOMFromFiber(fiber);
-            }
-
-            if (fiber.return) {
-                // 我们直接把他的真实dom塞进他父级元素里
-                fiber.return.dom.appendChild(fiber.dom);
             }
 
             let previousChildFiber = null;
@@ -112,7 +130,7 @@
         }
 
         function render(element, container) {
-           nextUnitWork = {
+           workInProgressFiber = nextUnitWork = {
                dom: container,
                props: {
                    children: [element]
